@@ -8,6 +8,7 @@ import Employees from "./Employees";
 const SignInPage = ({authenticated,isAuthorizetion}) => {
     const [userLoginState, setUserLoginState] = useState({email: '', password: ''});
     if (authenticated) {
+        console.log(authenticated)
         return <Navigate to="/employees"/>
     }
     const loginUser = e => {

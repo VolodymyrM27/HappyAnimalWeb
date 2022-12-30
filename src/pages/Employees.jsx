@@ -1,22 +1,26 @@
 import SIdebar from "../components/SIdebar";
 import React from 'react'
-import {employees} from "../http";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import {employees,deleteEmployee} from "../http";
+
 import '../App.css'
+import {Grid} from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import CardActions from "@mui/material/CardActions";
+import Button from "@mui/material/Button";
+import DeleteIcon from '@mui/icons-material/Delete';
+import ModalTask from "../components/ModalTask"
+import AddIcon from "@mui/icons-material/Add";
 
 
 
-const Employees = ({isAuthorizetion}) => {
+const Employees = ({authenticated, isAuthorizetion}) => {
     const [state,setState] = React.useState([{
         email: "Loading...",
         firstName: "",
-        lastName: ""
+        lastName: "",
+        id: -1
     }])
 
     const getUsers = async () =>{
@@ -24,54 +28,91 @@ const Employees = ({isAuthorizetion}) => {
         let g = [{
             email: "",
             firstName: "",
-            lastName: ""
+            lastName: "",
+            id: -1
         }]
         for(let i = 0; i < getUser.length;i++){
             g[i] = {
                 email: "",
                 firstName: "",
-                lastName: ""
+                lastName: "",
+                id: -1
             }
             g[i].email = getUser[i].email;
             g[i].firstName = getUser[i].firstName;
             g[i].lastName = getUser[i].lastName;
+            g[i].id = getUser[i].id;
         }
         setState(g)
     }
+
+    function deleteEmpl(idEmployee){
+
+        if (window.confirm('Are you sure you want to delete this employee into the database?')) {
+            deleteEmployee(idEmployee);
+            console.log(state)
+            console.log('Thing was deleted to the database.');
+        }
+        setTimeout(function() {
+            getUsers();
+            console.log(state)
+        }, 1000);
+
+    }
+
     React.useEffect(()=>{getUsers()},[])
-    console.log(state);
     return(
+
         <div>
             <SIdebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'}  isAuthorizetion={isAuthorizetion}/>
-
             <div className="employees-table">
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>email</TableCell>
-                                <TableCell align="right">first Name</TableCell>
-                                <TableCell align="right">Last Name</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {state.map((row) => (
-                                <TableRow
-                                    key={row.email}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    <TableCell component="th" scope="row">
-                                        {row.email}
-                                    </TableCell>
-                                    <TableCell align="right">{row.firstName}</TableCell>
-                                    <TableCell align="right">{row.lastName}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <Grid container spacing={3}>
+                    {state.map((elm) => (
+                        <Grid item xs={3}>
+                            <Card variant="outlined">{getCard(elm.email,elm.firstName,elm.lastName, elm.id)}</Card>
+                        </Grid>
+                    ))}
+
+                </Grid>
+
+                <div className="addButton">
+                    <Card variant="outlined">
+                        <CardContent>
+                            <Button
+                                variant="outlined"
+                                size="large"
+                                startIcon={<AddIcon />}
+                            >
+                                Add
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
-
     )
+
+    function getCard(email, fistName, lastName, idEmployee){
+        return(
+            <React.Fragment>
+                <CardContent>
+                    <Typography variant="h5" component="div">
+                        {email}
+                    </Typography>
+
+                    <Typography variant="body2">
+                        {fistName}  {lastName}
+                    </Typography>
+                </CardContent>
+                <CardActions>
+                    <Button
+                        onClick={() => {deleteEmpl(idEmployee);
+                        }}
+                        variant="outlined" size="small" startIcon={<DeleteIcon />}>Delete</Button>
+                    <ModalTask employeeId={idEmployee}/>
+                </CardActions>
+            </React.Fragment>
+        );
+    }
 }
 export default  Employees
