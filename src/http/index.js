@@ -1,8 +1,5 @@
 export const API_BASE_URL = 'http://localhost:8080';
 export const ACCESS_TOKEN = 'accessToken';
-export const BASE_URL_THINGS_SPEAK = "https://api.thingspeak.com/"
-export const API_KEY_READ = "0ASNPTOU1P7D8KQQ";
-export const IP_THINGS_SPEAK = 1966150;
 const request = (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
@@ -78,6 +75,22 @@ export function addTask(taskRequest,idEmployee) {
     });
 }
 
+export function addNewEmployee(taskRequest) {
+    return request({
+        url: API_BASE_URL + `/employees`,
+        method: 'POST',
+        body: JSON.stringify(taskRequest)
+    });
+}
+
+
+export function addNewAnimal(taskRequest) {
+    return request({
+        url: API_BASE_URL + `/animals`,
+        method: 'POST',
+        body: JSON.stringify(taskRequest)
+    });
+}
 export function deleteEmployee(idEmployee) {
     return requestWithNoAnswer({
         url: API_BASE_URL + `/employees/${idEmployee}`,
@@ -85,14 +98,14 @@ export function deleteEmployee(idEmployee) {
     });
 }
 
-
-export function signup(signupRequest) {
-    return request({
-        url: API_BASE_URL + "/auth/signup",
-        method: 'POST',
-        body: JSON.stringify(signupRequest)
+export function deleteAnimal(idEmployee) {
+    return requestWithNoAnswer({
+        url: API_BASE_URL + `/animals/${idEmployee}`,
+        method: 'DELETE',
     });
 }
+
+
 
 
 
@@ -106,6 +119,17 @@ export function employees() {
     });
 }
 
+export function animals() {
+    if(!isTokenExist()) {
+        return Promise.reject("No access token set.");
+    }
+    return request({
+        url: API_BASE_URL + "/animals",
+        method: 'GET',
+    });
+}
+
+
 export function getTaskEmployee(idEmployee) {
     return request({
         url: API_BASE_URL + `/employees/${idEmployee}/task`,
@@ -114,30 +138,16 @@ export function getTaskEmployee(idEmployee) {
 }
 
 
-export function putUser(signupRequest, id) {
-    console.log("Here")
-    console.log(signupRequest)
-    console.log(id)
+export function getAnimalHistory(idAnimal) {
     return request({
-        url: API_BASE_URL + `/users/${id}`,
-        method: 'PUT',
-        body: JSON.stringify(signupRequest)
+        url: API_BASE_URL + `/animals/history/${idAnimal}`,
+        method: 'GET',
     });
 }
+
+
 
 function isTokenExist() {
     return localStorage.getItem(ACCESS_TOKEN);
 }
 
-export const getTemperatureForChart = async () => {
-    const response = await fetch(`${BASE_URL_THINGS_SPEAK}channels/${IP_THINGS_SPEAK}/fields/1.json?api_key=${API_KEY_READ}&results=100`, {
-        method: 'GET',
-        headers:{
-            'Content-Type': 'application/json'
-        }});
-
-    const body = await response.json();
-    const res = body.feeds;
-    console.log(res)
-    return res;
-}

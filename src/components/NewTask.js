@@ -4,17 +4,32 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
  import AddIcon from "@mui/icons-material/Add";
  import SendIcon from "@mui/icons-material/Send"
 import {useState} from "react";
-import {ACCESS_TOKEN, addTask, login} from "../http";
+import { addTask} from "../http";
+import LocalizedStrings from "react-localization";
 
 
+let stringsText = new LocalizedStrings({
+    en:{
+        New: "New",
+        main:"Task Employee",
+        nameTask:"Name of the task"
+
+    },
+    uk: {
+        New: "Нове",
+        main:"Завдання робітнику",
+        nameTask:"Назва завдання"
+    }
+});
 
 
+const ModalTask = ({employeeId, languageState}) => {
 
-const ModalTask = ({employeeId}) => {
+    stringsText.setLanguage(languageState)
+
     const [taskState, setTaskState] = useState({taskField: '', date: '',status: 'IN_PROGRESS'});
 
     const style = {
@@ -33,7 +48,6 @@ const ModalTask = ({employeeId}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const [value, setValue] = React.useState(null);
 
     const addNewTask = e => {
         e.preventDefault();
@@ -49,7 +63,7 @@ const ModalTask = ({employeeId}) => {
         <div>
             <div className="employees-button">
                 <Button onClick={handleOpen} variant="contained" endIcon={<AddIcon />}>
-                    New
+                    {stringsText.New}
                 </Button>
             </div>
             <Modal
@@ -60,13 +74,13 @@ const ModalTask = ({employeeId}) => {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Task Employee
+                        {stringsText.main}
                     </Typography>
                     <form onSubmit={addNewTask}>
                         <TextField
                             id="name-of-task"
                             value={taskState.taskField}
-                            label="Name of the task"
+                            label={stringsText.nameTask}
                             onChange={e => setTaskState({...taskState,taskField:e.target.value})}
                             variant="outlined"
                         />

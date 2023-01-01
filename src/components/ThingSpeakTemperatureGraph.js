@@ -1,7 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import {CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis} from "recharts";
+import React, {  } from 'react';
+import { Line, LineChart, Tooltip, XAxis, YAxis} from "recharts";
+import LocalizedStrings from "react-localization";
+import moment from 'moment';
+
+let stringsText = new LocalizedStrings({
+    en:{
+        Temperature: "Temperature"
+
+    },
+    uk: {
+        Temperature: "температура"
+    }
+});
 
 const ThingSpeakFieldsGraph = (props) => {
+    stringsText.setLanguage(props.languageState)
+
     const { channelId, apiKey } = props;
     const [data, setData] = React.useState([]);
 
@@ -30,16 +44,17 @@ const ThingSpeakFieldsGraph = (props) => {
         return () => clearInterval(interval);
     }, []);
 
-    const maxTemperature = Math.max(...data.map(entry => entry.temperature));
-    const minTemperature = Math.min(...data.map(entry => entry.temperature));
+
+    const maxTemperature = Math.round(Math.max(...data.map(entry => entry.temperature)));
+    const minTemperature = Math.round(Math.min(...data.map(entry => entry.temperature)));
 console.log(maxTemperature)
     console.log(data)
     return (
         <div>
-            <h2>Temperature</h2>
+            <h2>{stringsText.Temperature}</h2>
             <LineChart width={600} height={300} data={data}>
                 <Line type="monotone" dataKey="temperature" stroke="#8884d8" />
-                <XAxis dataKey="timestamp" />
+                <XAxis dataKey="timestamp" tickFormatter={date => moment(date).format('DD-MM-YYYY')}/>
                 <YAxis domain={[minTemperature, maxTemperature]} />
                 <Tooltip />
             </LineChart>

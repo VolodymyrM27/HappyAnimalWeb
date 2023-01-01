@@ -8,14 +8,30 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import AddIcon from '@mui/icons-material/Add';
-import {employees, getTaskEmployee} from "../http";
+import { getTaskEmployee} from "../http";
 import NewTask from "./NewTask";
+import LocalizedStrings from "react-localization";
 
 
 
 
-const ModalTask = ({employeeId}) => {
+let stringsText = new LocalizedStrings({
+    en:{
+        main: "Task Employee",
+        status:"Task Status",
+        descrition: "Task Description",
+        Tasks:"Tasks"
+    },
+    uk: {
+        main: "Завдання робітника",
+        status:"Статус",
+        descrition: "Опис завдання",
+        Tasks:"завдання"
+    }
+});
+const ModalTask = ({employeeId, languageState}) => {
+    stringsText.setLanguage(languageState)
+
 
     const [state,setState] = React.useState([{
         taskField: "Loading...",
@@ -63,7 +79,7 @@ const ModalTask = ({employeeId}) => {
     console.log(state)
     return (
         <div>
-            <Button onClick={handleOpen}>Tasks</Button>
+            <Button onClick={handleOpen}> {stringsText.Tasks}</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -72,13 +88,13 @@ const ModalTask = ({employeeId}) => {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title " variant="h6 alignCenter"  component="h2">
-                        Task Employee
+                        {stringsText.main}
                     </Typography>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Task Description</TableCell>
-                                <TableCell>Task Status</TableCell>
+                                <TableCell>{stringsText.descrition}</TableCell>
+                                <TableCell>{stringsText.status}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -90,7 +106,7 @@ const ModalTask = ({employeeId}) => {
                             ))}
                         </TableBody>
                     </Table>
-                    <NewTask employeeId={employeeId}/>
+                    <NewTask employeeId={employeeId} languageState={languageState}/>
                 </Box>
             </Modal>
         </div>

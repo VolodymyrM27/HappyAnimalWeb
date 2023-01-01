@@ -11,17 +11,33 @@ import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModalTask from "../components/ModalTask"
-import AddIcon from "@mui/icons-material/Add";
+import AddEmployee from "../components/AddEmployee";
+import LocalizedStrings from "react-localization";
 
 
+let stringsText = new LocalizedStrings({
+    en:{
 
-const Employees = ({authenticated, isAuthorizetion}) => {
+        Delete:"Delete"
+    },
+    uk: {
+
+        Delete:"Видалити"
+    }
+});
+const Employees = ({isAuthorizetion, languageState, setLanguageState}) => {
+    stringsText.setLanguage(languageState)
+
     const [state,setState] = React.useState([{
         email: "Loading...",
         firstName: "",
         lastName: "",
         id: -1
     }])
+
+
+
+
 
     const getUsers = async () =>{
         const getUser = await employees();
@@ -60,11 +76,12 @@ const Employees = ({authenticated, isAuthorizetion}) => {
 
     }
 
+
     React.useEffect(()=>{getUsers()},[])
     return(
 
         <div>
-            <SIdebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'}  isAuthorizetion={isAuthorizetion}/>
+            <SIdebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'}  isAuthorizetion={isAuthorizetion} languageState={languageState} setLanguageState={setLanguageState}/>
             <div className="employees-table">
                 <Grid container spacing={3}>
                     {state.map((elm) => (
@@ -78,15 +95,11 @@ const Employees = ({authenticated, isAuthorizetion}) => {
                 <div className="addButton">
                     <Card variant="outlined">
                         <CardContent>
-                            <Button
-                                variant="outlined"
-                                size="large"
-                                startIcon={<AddIcon />}
-                            >
-                                Add
-                            </Button>
+                            <AddEmployee languageState={languageState}/>
                         </CardContent>
                     </Card>
+
+
                 </div>
             </div>
         </div>
@@ -108,8 +121,8 @@ const Employees = ({authenticated, isAuthorizetion}) => {
                     <Button
                         onClick={() => {deleteEmpl(idEmployee);
                         }}
-                        variant="outlined" size="small" startIcon={<DeleteIcon />}>Delete</Button>
-                    <ModalTask employeeId={idEmployee}/>
+                        variant="outlined" size="small" startIcon={<DeleteIcon />}>{stringsText.Delete}</Button>
+                    <ModalTask employeeId={idEmployee} languageState={languageState}/>
                 </CardActions>
             </React.Fragment>
         );

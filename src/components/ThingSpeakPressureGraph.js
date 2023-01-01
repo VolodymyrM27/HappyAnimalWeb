@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis} from "recharts";
+import LocalizedStrings from "react-localization";
+import moment from "moment";
 
+
+let stringsText = new LocalizedStrings({
+    en:{
+        Pressure: "Pressure"
+
+    },
+    uk: {
+        Pressure: "Тиск"
+    }
+});
 const ThingSpeakFieldsGraph = (props) => {
+    stringsText.setLanguage(props.languageState)
+
     const { channelId, apiKey } = props;
     const [data, setData] = React.useState([]);
 
@@ -30,16 +44,17 @@ const ThingSpeakFieldsGraph = (props) => {
         return () => clearInterval(interval);
     }, []);
 
-    const maxTemperature = Math.max(...data.map(entry => entry.pressure));
-    const minTemperature = Math.min(...data.map(entry => entry.pressure));
+
+    const maxTemperature = Math.round(Math.max(...data.map(entry => entry.pressure)));
+    const minTemperature = Math.round(Math.min(...data.map(entry => entry.pressure)));
     console.log(maxTemperature)
     console.log(data)
     return (
         <div>
-            <h2>Pressure</h2>
+            <h2>{stringsText.Pressure}</h2>
             <LineChart width={600} height={300} data={data}>
                 <Line type="monotone" dataKey="pressure" stroke="#8884d8" />
-                <XAxis dataKey="timestamp" />
+                <XAxis dataKey="timestamp" tickFormatter={date => moment(date).format('DD-MM-YYYY')}/>
                 <YAxis domain={[minTemperature, maxTemperature]} />
                 <Tooltip />
             </LineChart>

@@ -163,8 +163,13 @@ form span {
 .employees-button{
   margin-top: 10px;
 }
+
+.employees-button2{
+  margin-top: 10px;
+  margin-left: 20px;
+}
 .addButton{
 
   margin-top: 40px;
-  margin-right: 1200px;
+  margin-right: 1100px;
 }

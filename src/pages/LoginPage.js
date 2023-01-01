@@ -2,7 +2,6 @@ import React, {useState} from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import {login,ACCESS_TOKEN} from '../http'
 import '../App.css'
-import Employees from "./Employees";
 
 
 const SignInPage = ({authenticated,isAuthorizetion}) => {
